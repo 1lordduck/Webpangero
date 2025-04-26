@@ -34,7 +34,7 @@ Before you begin, ensure you have the following installed:
 
 3. Run the scanner:
    ```bash
-   python3 webpangero.py -u https://example.com -T 22
+   python3 webscanner.py -u https://example.com -T 22
    ```
 
 ## Usage
@@ -49,12 +49,12 @@ WebPangero allows you to scan a website by providing either a URL (`-u`) or a fi
   
 ### Example 1: Scan a single URL
 ```bash
-python3 webpangero.py -u https://pentest-ground.com:4280/vulnerabilities/xss_s/ -T 22
+python3 webscanner.py -u https://pentest-ground.com:4280/vulnerabilities/xss_s/ -T 22
 ```
 
 ### Example 2: Scan a html file
 ```bash
-python3 webpangero.py -f urls.txt -T 22
+python3 webscanner.py -f urls.txt -T 22
 ```
 
 The scanner will then perform the scan and return results based on the information found (such as vulnerabilities)
