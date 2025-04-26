@@ -24,7 +24,7 @@ __        __   _     ____
          Simple Web Vulnerability Scanner   
                Author: 1lordduck
 """
-
+print(f"{Color.BLUE}{ASCII_LOGO}{Color.RESET}")
 def loadPayloads(url):
     try:
         response = requests.get(url)
@@ -159,7 +159,7 @@ def generate_report(sql_results, xss_results, target, found):
 
 def main():
     try:
-        print(f"{Color.BLUE}{ASCII_LOGO}{Color.RESET}")
+
         args = parse_args()
         target = "None"
         VulnsFound = ""
