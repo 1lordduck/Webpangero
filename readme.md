@@ -61,7 +61,7 @@ The scanner will then perform the scan and return results based on the informati
 
 ## Contributing
 
-We welcome contributions to WebPangero. To contribute:
+I welcome contributions to WebPangero. To contribute:
 
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature-name`).
