@@ -54,7 +54,7 @@ python3 webscanner.py -u https://pentest-ground.com:4280/vulnerabilities/xss_s/ 
 
 ### Example 2: Scan a html file
 ```bash
-python3 webscanner.py -f urls.txt -T 22
+python3 webscanner.py -f awesomesite.html -T 22
 ```
 
 The scanner will then perform the scan and return results based on the information found (such as vulnerabilities)
