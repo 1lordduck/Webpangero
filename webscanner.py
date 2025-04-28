@@ -6,6 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 import sys
 from tqdm import tqdm
+import ssl, socket
+from urllib.parse import urlparse 
+import dns.resolver
 
 class Color:
     BLUE = '\033[94m'
@@ -24,19 +27,20 @@ __        __   _     ____
          Simple Web Vulnerability Scanner   
                Author: 1lordduck
 """
+
 print(f"{Color.BLUE}{ASCII_LOGO}{Color.RESET}")
-def loadPayloads(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  
-        payloads = response.text.splitlines()  # Split by newlines
-        return [payload.strip() for payload in payloads if payload.strip()]  
+def loadPayloads(file):
+    try: 
+        with open (file, "r") as file:
+            content = file.read()
+            return content.splitlines()
+
     except requests.exceptions.RequestException as e:
         print(f"{Color.RED}[!] Error fetching payloads: {e}{Color.RESET}")
         sys.exit(1)
 
-SQLI_PAYLOADS = loadPayloads("https://raw.githubusercontent.com/1lordduck/Webpangero/main/payloads/sqli.txt")
-XSS_PAYLOADS = loadPayloads("https://raw.githubusercontent.com/1lordduck/Webpangero/main/payloads/xss.txt")
+SQLI_PAYLOADS = loadPayloads("./payloads/sqli.txt")
+XSS_PAYLOADS = loadPayloads("./payloads/xss.txt")
 
 SQL_ERRORS = [
     "you have an error in your sql syntax",
@@ -59,6 +63,7 @@ def banner(target):
         response = requests.get(target)
 
         xxss = response.headers.get("x-xss-protection", "No x-xss-protection header found")
+        X_frame_Options = response.headers.get("X-Frame-Options", "No X-Frame-Options header found")
 
         server_banner = response.headers.get('Server', 'No server header found')
         x_powered_by = response.headers.get("X-Powered-By", "No X-Powered-By header found")
@@ -66,11 +71,73 @@ def banner(target):
         print(f"{Color.GREEN}Server:{Color.RESET} {server_banner}")
         print(f"{Color.GREEN}Powered by:{Color.RESET} {x_powered_by}")
         print(f"{Color.GREEN}X-XSS-Protection header:{Color.RESET} {xxss}")
-        
+        print(f"{Color.GREEN}X-Frame-Options header:{Color.RESET} {X_frame_Options}")
+       
 
     except requests.exceptions.RequestException as e:
         print(f"{Color.RED}[!]{Color.RESET} There was an error while banner grabbing: {e}")
         sys.exit(0)
+
+def SSLfetch(target_url):
+    try:
+        hostname = urlparse(target_url).hostname
+        ctx = ssl.create_default_context()
+        with ctx.wrap_socket(socket.socket(), server_hostname=hostname) as s:
+            s.connect((hostname, 443))
+            cert = s.getpeercert()
+            if cert:
+                wanted_keys = {
+                    'emailAddress',
+                    'commonName',
+                    'organizationName',
+                    'countryName',
+                    'stateOrProvinceName'
+                }
+
+                for item in cert.get('issuer', []):
+                    for pair in item:
+                        if pair[0] in wanted_keys:
+                            print(f"{Color.BLUE}{pair[0]}: {Color.RESET}{pair[1]}")
+    except Exception as e:
+        print(f"[!] Error fetching SSL Info: {e}")
+
+record_types = ['A', 'CAA']
+
+def fetch_DNSRECORDS(target):
+    resolver = dns.resolver.Resolver()
+    hostname = urlparse(target).hostname or target
+
+    a_records = []
+    caa_records = []
+
+    for record_type in record_types:
+        try:
+            answers = resolver.resolve(hostname, record_type)
+        except dns.resolver.NoAnswer:
+            continue
+        except dns.resolver.NXDOMAIN:
+            print(f"No such domain: {hostname}")
+            return
+        except Exception as e:
+            print(f"Error resolving {record_type} record: {e}")
+            continue
+
+        if record_type == 'A':
+            a_records.extend([rdata.address for rdata in answers])
+        elif record_type == 'CAA':
+            caa_records.extend([str(rdata) for rdata in answers])
+
+    if a_records:
+        print(f"{Color.BLUE} IPs found: {Color.RESET}")
+        for ip in a_records:
+            print(f"  {ip}")
+
+    if caa_records:
+        print(f"{Color.BLUE}CAA domains:{Color.RESET}")
+        for caa in caa_records:
+            print(f"  {caa}")
+
+    
 
 def parse_args():
     parser = argparse.ArgumentParser(description='WebScanner - Web Vulnerability Scanner')
@@ -114,8 +181,8 @@ def scan_sql_injection(form, threshold):
             response = requests.post(action, data=data) if method == "post" else requests.get(action, params=data)
             if "sql" in response.text.lower() or "error" in response.text.lower():
                 found.append((payload, response.url))
-        except:
-            continue
+        except: 
+            sys.exit(1)
     return found
 
 def scan_xss(form, threshold):
@@ -131,12 +198,17 @@ def scan_xss(form, threshold):
             if payload in response.text:
                 found.append((payload, response.url))
         except:
-            continue
+            sys.exit(1)
+            
+    
     return found
 
 def generate_report(sql_results, xss_results, target, found):
     print("="*40)
     print(f"{Color.BLUE}Target: {Color.RESET}{target}")
+    fetch_DNSRECORDS(target)
+    SSLfetch(target)
+    print('='*40)
     banner(target)
     print(f"{Color.GREEN}Found Vulnerabilities:{Color.RESET} {found}")
     print("="*40)

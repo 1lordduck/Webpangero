@@ -2,3 +2,4 @@ argparse
 requests
 beautifulsoup4
 tqdm
+dnspython

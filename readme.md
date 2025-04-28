@@ -2,13 +2,21 @@
 
 WebPangero is a **simple** web scanner designed to quickly and easily scan websites. It is lightweight and fast, making it ideal for users who need to quickly analyze websites for certain information.
 
-This project was started as a way to learn and practice my knowledge in web development and scanning tools. It's the first version of the project (v0.0.1) and will evolve over time with additional features and improvements.
+This project was started as a way to learn and practice my knowledge in web development and scanning tools. It's the first version of the project (v0.0.2) and will evolve over time with additional features and improvements.
 
 ## Features
 
 - Fast and efficient website scanning.
 - Simple and easy-to-use interface.
 - Lightweight and minimal dependencies.
+    
+## Changelog
+
+### Added
+- Scanner will now try to fetch DNS records (A, CAA)
+- Scanner will now try to fetch SSL information 
+
+Spidering soon!!
 
 ## Installation
 
