@@ -13,10 +13,9 @@ This project was started as a way to learn and practice my knowledge in web deve
 ## Changelog
 
 ### Added
-- Scanner will now try to fetch DNS records (A, CAA)
-- Scanner will now try to fetch SSL information 
+- Proper SQLi detection
 
-Spidering soon!!
+Spidering & Other tests soon!!
 
 ## Installation
 
