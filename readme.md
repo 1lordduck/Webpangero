@@ -2,7 +2,7 @@
 
 WebPangero is a **simple** web scanner designed to quickly and easily scan websites. It is lightweight and fast, making it ideal for users who need to quickly analyze websites for certain information.
 
-This project was started as a way to learn and practice my knowledge in web development and scanning tools.
+This project was started as a way to learn and practice my knowledge in web development and scanning tools, and for fun of course.
 
 ## Features
 
@@ -14,8 +14,6 @@ This project was started as a way to learn and practice my knowledge in web deve
 
 ### Added
 - Proper SQLi detection
-
-Spidering & Other tests soon!!
 
 ## Installation
 
@@ -65,17 +63,6 @@ python3 webscanner.py -f awesomesite.html -T 22
 ```
 
 The scanner will then perform the scan and return results based on the information found (such as vulnerabilities)
-
-## Contributing
-
-I welcome contributions to WebPangero. To contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-name`).
-3. Make your changes.
-4. Commit your changes (`git commit -am 'Add new feature'`).
-5. Push to the branch (`git push origin feature-name`).
-6. Open a pull request.
 
 ## License
 
